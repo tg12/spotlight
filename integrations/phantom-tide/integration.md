@@ -14,15 +14,22 @@ It returns restricted-airspace crossing candidates with event IDs, timestamps, a
 
 Treat these records as **candidate movement context**, not as proof of wrongdoing, regulatory breach, or live enforcement alert. The endpoint contract explicitly says entries are replay/archive-derived candidates and should be used as ingestion or showcase context.
 
+## Product And Operator Docs
+
+- Homepage: https://phantom.labs.jamessawyer.co.uk/
+- Operator guide: https://phantom.labs.jamessawyer.co.uk/docs/guide/
+
 ## Environment
 
-Requires:
+The confirmed public endpoint requires no API key. No env var setup is needed to use it.
+
+If Phantom Tide later documents keyed routes, add:
 
 ```bash
 PHANTOM_TIDE_API_KEY=pt_...
 ```
 
-Do not print the key. Store it in `.env` only.
+Do not print the key. Store it in `.env` only. Do not add the key until the keyed endpoints are documented.
 
 ## When To Use
 
@@ -37,26 +44,89 @@ Do not use Phantom Tide as a sole source for publication-grade findings. Use it 
 
 ## Aircraft Restricted-Airspace Query
 
+The endpoint is public. No API key or Authorization header is required.
+
 Validate case slugs and output paths before constructing command strings. Do not interpolate untrusted user text into shell commands.
 
 ```bash
-python3 scripts/spotlight_safe.py validate-slug "{project_slug}"
 curl --get "https://phantom.labs.jamessawyer.co.uk/api/public/aircraft/restricted-airspace-crossings" \
-  -H "Authorization: Bearer ${PHANTOM_TIDE_API_KEY}" \
   --data-urlencode "hours=24" \
   --data-urlencode "limit=100" \
   --data-urlencode "include_meta=true" \
-  -o "cases/{project}/research/phantom-tide-airspace-{timestamp}.json"
+  -o "cases/{project_slug}/research/phantom-tide-airspace-{timestamp}.json"
 ```
 
-For polling, use the returned watermark:
+For polling, use the `poll_after` watermark returned in each response:
 
 ```bash
 curl --get "https://phantom.labs.jamessawyer.co.uk/api/public/aircraft/restricted-airspace-crossings" \
-  -H "Authorization: Bearer ${PHANTOM_TIDE_API_KEY}" \
   --data-urlencode "sample_after={poll_after}" \
   --data-urlencode "include_meta=true" \
-  -o "cases/{project}/research/phantom-tide-airspace-after-{timestamp}.json"
+  -o "cases/{project_slug}/research/phantom-tide-airspace-after-{timestamp}.json"
+```
+
+## Representative Response Shape
+
+From a live call (`hours=24&limit=2&include_meta=true`):
+
+```json
+{
+  "hours": 24,
+  "aircraft_count": 11,
+  "crossing_count": 2,
+  "latest_when": "2026-05-25T13:41:05",
+  "poll_after": "2026-05-25T13:41:05",
+  "crossings": [
+    {
+      "event_id": "airspace-crossing:010283:faa_special_use_airspace:W-103:667:exited:2026-05-25T13:41:05",
+      "when": "2026-05-25T13:41:05",
+      "who": { "icao24": "010283", "callsign": "MSR985" },
+      "what": {
+        "transition": "exited",
+        "airspace": {
+          "feature_id": "faa_special_use_airspace:W-103:667",
+          "name": "W-103",
+          "restriction_label": "Special use airspace"
+        }
+      },
+      "where": { "lat": 42.775, "lon": -70.933 }
+    }
+  ],
+  "partial": false,
+  "empty_reason": null,
+  "quality": {
+    "status": "current",
+    "reference_available": true,
+    "reference_feature_count": 1565,
+    "missing_reference_count": 0,
+    "aircraft_history_status": "current"
+  },
+  "reference_layer": {
+    "route": "/api/static/faa-restricted-airspace",
+    "feature_count": 1565,
+    "fetched_at": "2026-04-15T21:08:32Z",
+    "source_snapshots": [
+      {
+        "filename": "faa_special_use_airspace.json",
+        "snapshot_id": "faa_special_use_airspace.json:1776287312000000000:7421611",
+        "fetched_at": "2026-04-15T21:08:32Z",
+        "missing": false
+      }
+    ]
+  },
+  "data_freshness": {
+    "status": "live",
+    "collected_at": "2026-05-25T14:56:38Z",
+    "source_count": 1,
+    "stale_count": 0
+  },
+  "contract": {
+    "notes": [
+      "Entries are replay/archive-derived candidates. Use as ingestion or showcase context.",
+      "Public feed. No API key required."
+    ]
+  }
+}
 ```
 
 ## Output Handling

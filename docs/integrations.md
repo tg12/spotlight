@@ -20,7 +20,7 @@ An agent invokes a **skill** to get *guidance* and calls an **integration** to g
 | `browser-use` | library | browser-automation | No (optional cloud) | Agent-driven browser automation — form navigation, JS-rendered extraction, multi-step flows. MIT open source. |
 | `junkipedia` | api | social-osint | `JUNKIPEDIA_API_KEY` | Narrative / misinformation tracking across social platforms. Application-based access. |
 | `osint-navigator` | api | tool-discovery | `OSINT_NAV_API_KEY` | 10,000+ OSINT tools with AI-powered synthesized answers. Complements the curated 150-tool catalog in the `osint` skill. |
-| `phantom-tide` | api | transport-intelligence | `PHANTOM_TIDE_API_KEY` | Aircraft restricted-airspace crossing candidates and source-freshness context. Maritime/convergence routes are planned pending a stable API contract. |
+| `phantom-tide` | api | transport-intelligence | — | Aircraft restricted-airspace crossing candidates and source-freshness context. Public endpoint, no key required. Maritime/convergence routes planned. [phantom.labs.jamessawyer.co.uk](https://phantom.labs.jamessawyer.co.uk/) \| [operator guide](https://phantom.labs.jamessawyer.co.uk/docs/guide/) |
 | `scoutpost` | api | monitoring | `SCOUTPOST_API_KEY` | Durable monitoring via existing Scoutpost projects, scouts, and information units. |
 | `unpaywall` | api | academic-open-access | `UNPAYWALL_EMAIL` | Legal open-access lookup for academic papers by DOI. Used only when selected in setup and green in preflight. |
 

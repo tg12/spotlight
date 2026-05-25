@@ -4,8 +4,10 @@
   "description": "Cross-domain maritime and airspace intelligence API for restricted-airspace crossing candidates, source freshness, and future vessel/area intelligence workflows.",
   "category": "transport-intelligence",
   "type": "api",
-  "requires_key": true,
-  "env_vars": ["PHANTOM_TIDE_API_KEY"],
+  "requires_key": false,
+  "env_vars": [],
+  "optional_env_vars": ["PHANTOM_TIDE_API_KEY"],
+  "env_note": "The restricted-airspace endpoint is public and keyless. PHANTOM_TIDE_API_KEY is reserved for future keyed routes and should not be set until Phantom Tide documents those endpoints.",
   "capabilities": [
     "aircraft-restricted-airspace-crossings",
     "transport-anomaly-triage",
@@ -17,5 +19,5 @@
   "invocable_by": ["investigator", "fact-checker"],
   "homepage": "https://phantom.labs.jamessawyer.co.uk/",
   "docs": "https://phantom.labs.jamessawyer.co.uk/docs/guide/",
-  "rate_limit_note": "Opt-in API key access. Current confirmed public endpoint is bounded and pollable; ask Phantom Tide for private endpoint quotas before enabling maritime/convergence calls."
+  "rate_limit_note": "Public endpoint is bounded (hours ≤ 72, limit ≤ 500) and pollable via poll_after watermark. No key required. Ask Phantom Tide for private endpoint quotas before enabling maritime/convergence calls."
 }
